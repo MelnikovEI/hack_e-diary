@@ -4,18 +4,23 @@
 https://github.com/devmanorg/e-diary
 
 ## Запуск
-Для работы необходимо, чтобы сайт электронного дневника https://github.com/devmanorg/e-diary был развёрнут.
+Для работы необходимо, чтобы сайт электронного дневника https://github.com/devmanorg/e-diary был развёрнут на Вашем
+сервере.
 
 - скопируйте файл `scripts.py` в папку электронного дневника рядом с файлом `manage.py`
 - запустите в командную строку и перейдите в папку проекта электронного дневника (содержит `manage.py` и `scripts.py`)
 - исполните команды:
     - `python manage.py shell`
+        - Результат должен выглядеть примерно так:`Python 3.8.10...
+          (InteractiveConsole)`
+          
+          `>>>`
     - `import scripts`
 
 Далее запускайте соответствующий скрипт, например:
-`scripts.fix_marks("Иванов Иван")`
-`scripts.remove_chastisements("Иванов Иван")`
-`scripts.create_commendation("Иванов Иван", "Музыка")`
+- `scripts.fix_marks("Иванов Иван")`
+- `scripts.remove_chastisements("Иванов Иван")`
+- `scripts.create_commendation("Иванов Иван", "Музыка")`
 
 ## Описание скриптов
 
