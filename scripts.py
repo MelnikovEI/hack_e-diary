@@ -1,6 +1,8 @@
 import random
 import textwrap
 
+from django.db.models import Model
+
 from datacenter.models import Schoolkid, Mark, Chastisement, Commendation, Lesson
 
 
@@ -23,10 +25,7 @@ def fix_marks(kid_name):
     except Exception as e:
         print(e)
         return
-    kid_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
-    for mark in kid_marks:
-        mark.points = 5
-        mark.save()
+    Mark.objects.filter(schoolkid=schoolkid, points__lte=3).update(points=5)
 
 
 def remove_chastisements(kid_name):
