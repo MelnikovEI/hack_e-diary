@@ -8,18 +8,20 @@ def get_schoolkid(kid_name):
     try:
         schoolkid = Schoolkid.objects.get(full_name__contains=kid_name)
     except Schoolkid.MultipleObjectsReturned:
-        return textwrap.dedent('''\
+        raise Schoolkid.MultipleObjectsReturned(textwrap.dedent('''\
         Найдено несколько учеников с таким ФИО или Вы забыли написать его.
-        Добавьте имя и/или фамилию и/или отчество и попробуйте снова.''')
+        Добавьте имя и/или фамилию и/или отчество и попробуйте снова.'''))
     except Schoolkid.DoesNotExist:
-        return '''Такой ученик не найден. Убедитесь, что ФИО написано точно как в журнале! И попробуйте снова.'''
+        raise Schoolkid.DoesNotExist(textwrap.dedent('''\
+        Такой ученик не найден. Убедитесь, что ФИО написано точно как в журнале! И попробуйте снова.'''))
     return schoolkid
 
 
 def fix_marks(kid_name):
-    schoolkid = get_schoolkid(kid_name)
-    if type(schoolkid) is str:
-        print(schoolkid)
+    try:
+        schoolkid = get_schoolkid(kid_name)
+    except Exception as e:
+        print(e)
         return
     kid_marks = Mark.objects.filter(schoolkid=schoolkid, points__lte=3)
     for mark in kid_marks:
@@ -28,9 +30,10 @@ def fix_marks(kid_name):
 
 
 def remove_chastisements(kid_name):
-    schoolkid = get_schoolkid(kid_name)
-    if type(schoolkid) is str:
-        print(schoolkid)
+    try:
+        schoolkid = get_schoolkid(kid_name)
+    except Exception as e:
+        print(e)
         return
     kid_chastisements = Chastisement.objects.filter(schoolkid=schoolkid)
     kid_chastisements.delete()
@@ -46,9 +49,10 @@ def create_commendation(kid_name, subject):
              'Я вижу, как ты стараешься!', 'Ты растешь над собой!', 'Ты многое сделал, я это вижу!',
              'Теперь у тебя точно все получится!',
              )
-    schoolkid = get_schoolkid(kid_name)
-    if type(schoolkid) is str:
-        print(schoolkid)
+    try:
+        schoolkid = get_schoolkid(kid_name)
+    except Exception as e:
+        print(e)
         return
     lessons = list(Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter,
                                          subject__title=subject))
