@@ -53,19 +53,17 @@ def create_commendation(kid_name, subject):
     except Exception as e:
         print(e)
         return
-    lessons = list(Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter,
-                                         subject__title=subject))
-    if not lessons:
+    all_lessons = Lesson.objects.filter(year_of_study=schoolkid.year_of_study, group_letter=schoolkid.group_letter,
+                                        subject__title=subject)
+    if not all_lessons:
         print("Указанный предмет не найден. Убедитесь, что предмет написан точно как в журнале и попробуте снова.")
         return
-    while lessons:
-        lesson = random.choice(lessons)
-        if Commendation.objects.filter(created=lesson.date, schoolkid=schoolkid, subject=lesson.subject):
-            lessons.remove(lesson)
-            continue
-        else:
-            Commendation.objects.create(created=lesson.date, schoolkid=schoolkid, subject=lesson.subject,
-                                        teacher=lesson.teacher, text=random.choice(COMMENDATIONS))
-            break
-    else:
+    commendation_dates = Commendation.objects.filter(schoolkid=schoolkid, subject__title=subject)\
+        .values_list('created', flat=True)
+    absent_commendation_lessons = all_lessons.exclude(date__in=commendation_dates)
+    if not absent_commendation_lessons:
         print("Для указанного ученика по указанному предмету похвала уже проставлена на всех уроках!")
+        return
+    rand_lesson = random.choice(absent_commendation_lessons)
+    Commendation.objects.create(created=rand_lesson.date, schoolkid=schoolkid, subject=rand_lesson.subject,
+                                teacher=rand_lesson.teacher, text=random.choice(COMMENDATIONS))
