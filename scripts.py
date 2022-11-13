@@ -1,4 +1,5 @@
 import random
+import textwrap
 
 from datacenter.models import Schoolkid, Mark, Chastisement, Commendation, Lesson
 
@@ -7,11 +8,11 @@ def get_schoolkid(kid_name):
     try:
         schoolkid = Schoolkid.objects.get(full_name__contains=kid_name)
     except Schoolkid.MultipleObjectsReturned:
-        return "Найдено несколько учеников с таким ФИО или Вы забыли написать его." \
-               "Добавьте имя и/или фамилию и/или отчество и попробуйте снова."
+        return textwrap.dedent('''\
+        Найдено несколько учеников с таким ФИО или Вы забыли написать его.
+        Добавьте имя и/или фамилию и/или отчество и попробуйте снова.''')
     except Schoolkid.DoesNotExist:
-        return "Такой ученик не найден. Убедитесь, что ФИО написано точно как в журнале!" \
-               "И попробуйте снова."
+        return '''Такой ученик не найден. Убедитесь, что ФИО написано точно как в журнале! И попробуйте снова.'''
     return schoolkid
 
 
